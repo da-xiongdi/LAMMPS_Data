@@ -25,11 +25,11 @@ def ave_time_space(input_file, frequency, tin, tfi, index):
     for i in range(len(header4Data)):
         if '/' in header4Data[i]:
             header4Data[i] = header4Data[i].replace('/', '-')
-            print(header4Data[i])
+            # print(header4Data[i])
         else:
             pass
-    print(header4Data)
-    save_path = path + '/%s.%s.%s.%s.%s.txt' % ('density', strategy, strength, tin/1e6, tfi/1e6)
+    # print(header4Data)
+    save_path = path + '/%s.%s.%s.%s.%s.txt' % (header4Data[index[0]], strategy, strength, tin/1e6, tfi/1e6)
 
     validNum = int((tfi-tin)/5000) + 1
     validData = np.zeros((validNum, chunkNum, rowNum))  # 11 for early

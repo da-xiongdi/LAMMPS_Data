@@ -125,7 +125,7 @@ class ReadData:
             else:
                 m = 0
                 n += 1
-        print('data has been loaded!')
+        # print('data has been loaded!')
         return [validData, DataHeader]
 
     def read1D(self):
@@ -140,7 +140,7 @@ class ReadData:
         for line in D1Data:
             validData[n] = [float(i) for i in line.strip(' ').strip('\n').split(' ')]
             n += 1
-        print('data has been loaded!')
+        # print('data has been loaded!')
         return [validData, DataHeader]
 
 

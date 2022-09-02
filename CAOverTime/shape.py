@@ -13,16 +13,18 @@ def radium(input_file, frequency, surface, base, equili=0):
     file = os.path.split(input_file)[1]
     suffix = '.' + file.split('.')[-1]
     file = file.strip(suffix)
+    keywords = file.split('-')
 
-    strength = file.split('-')[3]
     index = path.split('/')[-1]
-
-    save_r_path = path + '/r.%s.%s.%s.%s.txt' % (index, strength, surface, base)
+    if len(keywords) == 4:
+        save_r_path = path + '/r.%s.%s.%s.%s.txt' % (index, keywords[3], surface, base)
+    else:
+        save_r_path = path + '/r.%s.%s.%s.%s.%s.txt' % (index, keywords[3], keywords[4], surface, base)
 
     data = ReadFile.ReadChunk(input_file, frequency)
     validdata = data.read3DChunk()[0][equili:]
 
-    rho = 1.28 * surface
+    rho = 1.6 * surface  # 1.28
     cl = LocateCL.Cl(validdata, rho, base)
     clCoord = cl.drop()
 
