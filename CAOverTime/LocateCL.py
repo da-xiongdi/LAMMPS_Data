@@ -2,10 +2,11 @@ import numpy as np
 
 
 class Cl:
-    def __init__(self, ChunkData, rho, ylo):
+    def __init__(self, ChunkData, rho, ylo, volatile):
         self.ChunkData = ChunkData
         self.rho = rho
         self.ylo = ylo
+        self.volatile = volatile
 
     def contour(self):
         dropCoord = np.zeros(self.ChunkData.shape[0]).tolist()
@@ -13,7 +14,11 @@ class Cl:
         for i in self.ChunkData:
             m = 0
             for j in i:
-                if j[2] >= self.ylo and self.rho * 0.9 <= j[6] <= self.rho * 1.1:
+                if self.volatile:
+                    on_interface = True if self.rho * 0.9 <= j[6] <= self.rho * 1.1 else False
+                else:
+                    on_interface = True if j[6] < self.rho else False
+                if j[2] >= self.ylo and on_interface:
                     if m == 0:
                         dropCoord[n] = [[float(j[1]), float(j[2])]] # [int(j[0])] # [float(j[1]), float(j[2])]
                     else:
