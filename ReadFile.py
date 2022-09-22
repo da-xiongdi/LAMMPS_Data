@@ -105,21 +105,27 @@ class ReadData:
         self.file = file
         self.step = step
 
-    def read2D(self, info4chunk):
+    def read2D(self):
         with open(self.file, 'r') as f:
             fileData = f.readlines()
         fileHeader = fileData[0:3]
+        # timeHeader = fileHeader[1].strip('#').strip(' ').strip('\n').split(' ')
+        # info4chunk = len(timeHeader)
         DataHeader = fileHeader[2].strip('#').strip(' ').strip('\n').split(' ')
+        info4chunk = len(DataHeader)
+
         D2Data = fileData[3:]
 
         NumRow = int(D2Data[0].strip('\n').split(' ')[1])
-        validData = np.zeros((self.step, NumRow, len(DataHeader)))
+        step = int(len(D2Data) / (3 + NumRow)) + 1
+        validData = np.zeros((step, NumRow, info4chunk))
 
         n = 0
         m = 0
         for line in D2Data:
             num = [float(i) for i in line.strip(' ').strip('\n').split(' ')]
-            if len(num) != info4chunk:
+            if len(num) == info4chunk:
+                # print(line)
                 validData[n - 1, m] = num
                 m += 1
             else:
