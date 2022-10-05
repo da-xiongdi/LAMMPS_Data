@@ -54,10 +54,9 @@ def calculate_walker(input_files, equili=0):
         elif 'fluc' in keywords:
             values[i, 1] = calculator.capacity(input_data[:, 1], input_data[:, 4], temp=100, ncount=354)
         elif 'SS' in keywords:
-            # print('yes')
             input_data = data.read2D()[0]
-            values[i, 1] = calculator.vis_pacf(input_data, ave=True)
-
+            values[i, 1] = calculator.vis_pacf(input_data[3:], ave=False)
+            # print(values)
         damp_num += 1 if keywords[-1] != tdamp else 0
         tdamp = keywords[-1]
 
