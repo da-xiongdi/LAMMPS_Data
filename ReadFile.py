@@ -1,120 +1,19 @@
 import numpy as np
 
 
-class ReadChunk:
-    def __init__(self, file, step):
-        self.file = file
-        self.step = step
-
-    def read2D(self, info4chunk=3):
-        with open(self.file, 'r') as f:
-            fileData = f.readlines()
-        fileHeader = fileData[0:3]
-        DataHeader = fileHeader[2].strip('#').strip(' ').strip('\n').split(' ')
-        D2Data = fileData[3:]
-
-        NumRow = int(D2Data[0].strip('\n').split(' ')[1])
-        validData = np.zeros((self.step, NumRow, len(DataHeader)))
-
-        n = 0
-        m = 0
-        for line in D2Data:
-            num = [float(i) for i in line.strip(' ').strip('\n').split(' ')]
-            if len(num) != info4chunk:
-                validData[n - 1, m] = num
-                m += 1
-            else:
-                m = 0
-                n += 1
-        print('data has been loaded!')
-        return [validData, DataHeader]
-
-    def read3DChunk(self):
-        with open(self.file, 'r') as f:
-            fileData = f.readlines()
-        fileHeader = fileData[0:3]
-        DataHeader = fileHeader[2].strip('#').strip(' ').strip('\n').split(' ')
-        chunkData = fileData[3:]
-
-        # step = 1
-        # for line in chunkData:
-        #     num = [float(i) for i in line.strip(' ').strip('\n').split(' ')]
-        #     if num[2] % self.ntotal == 0:
-        #         step += 1
-        NumChunk = int(chunkData[0].strip('\n').split(' ')[1])
-        validData = np.zeros((self.step, NumChunk, len(DataHeader)))
-
-        n = 0
-        m = 0
-        for line in chunkData:
-            num = [float(i) for i in line.strip(' ').strip('\n').split(' ')]
-            if num[1] != NumChunk:
-                validData[n - 1, m] = num
-                m += 1
-            else:
-                m = 0
-                n += 1
-        print('data has been loaded!')
-        return [validData, DataHeader]
-
-    def dataByChunk(self):
-        validData = self.read3DChunk()[0]
-        DataHeader = self.read3DChunk()[1]
-        dataByPt = np.zeros((validData.shape[1], validData.shape[0], validData.shape[2] - 3))
-        m = 0
-        for i in validData:
-            n = 0
-            for j in i:
-                dataByPt[n, m] = j[3:]
-                n += 1
-            m += 1
-        return dataByPt
-
-    def to2D(self, dimension):
-        data = self.read3DChunk()
-        row = len(data[1])
-        validData = data[0]
-
-        ylo, yhi = np.min(validData[0, :, 2]), np.max(validData[0, :, 2])
-        xlo, xhi = np.min(validData[0, :, 1]), np.max(validData[0, :, 1])
-
-        ycount = len(validData[0, :, 1][np.where(validData[0, :, 1] == xlo)])
-        xcount = len(validData[0, :, 2][np.where(validData[0, :, 2] == ylo)])
-        xstep, ystep = (xhi - xlo) / (xcount - 1), (yhi - ylo) / (ycount - 1)
-        pInfo = [[xlo, xhi, xcount, xstep], [ylo, yhi, ycount, ystep]]
-        dInfo = pInfo[dimension]
-        print(dInfo)
-        print(pInfo[dimension - 1])
-
-        temp = np.zeros((self.step, ycount, row - 2))
-
-        t = 0
-        for i in validData:
-            for j in i:
-                for dvalue in np.arange(dInfo[0], dInfo[1] + dInfo[3], dInfo[3]):
-                    index = int((dvalue - dInfo[0]) / dInfo[3])
-                    if j[dimension + 1] == dvalue:
-                        temp[t, index] += np.hstack((j[dimension + 1], j[3:]))
-            t += 1
-        valid2D = temp / xcount
-        return valid2D
-
-
 class ReadData:
-    def __init__(self, file, step=1000):
+    def __init__(self, file):
         self.file = file
-        self.step = step
+        with open(self.file, 'r') as f:
+            self.fileData = f.readlines()
+        self.header = self.fileData[0].strip('#').strip(' ').strip('\n').split(' ')
 
     def read2D(self):
-        with open(self.file, 'r') as f:
-            fileData = f.readlines()
-        fileHeader = fileData[0:3]
-        # timeHeader = fileHeader[1].strip('#').strip(' ').strip('\n').split(' ')
-        # info4chunk = len(timeHeader)
+        fileHeader = self.fileData[0:3]
         DataHeader = fileHeader[2].strip('#').strip(' ').strip('\n').split(' ')
         info4chunk = len(DataHeader)
 
-        D2Data = fileData[3:]
+        D2Data = self.fileData[3:]
 
         NumRow = int(D2Data[0].strip('\n').split(' ')[1])
         step = int(len(D2Data) / (3 + NumRow)) + 1
@@ -135,11 +34,9 @@ class ReadData:
         return [validData, DataHeader]
 
     def read1D(self):
-        with open(self.file, 'r') as f:
-            fileData = f.readlines()
-        fileHeader = fileData[0:2]
+        fileHeader = self.fileData[0:2]
         DataHeader = fileHeader[1].strip('#').strip(' ').strip('\n').split(' ')
-        D1Data = fileData[2:]
+        D1Data = self.fileData[2:]
         validData = np.zeros((len(D1Data), len(DataHeader)))
 
         n = 0
@@ -187,3 +84,18 @@ class Readtri:
 
         print('data has been loaded!')
         return [box, header, validData]
+
+
+class ReadIn:
+    def __init__(self, file):
+        self.file = file
+        with open(self.file, 'r', encoding='UTF-8') as f:
+            self.fileData = f.readlines()
+
+    @property
+    def cal_in(self):
+        para = {}
+        for line in self.fileData:
+            [key, value] = line.strip('\n').split(' ', 1)
+            para[key] = value
+        return para

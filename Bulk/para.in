@@ -1,0 +1,9 @@
+dir_path D:/document/00Study/01接触角摩擦力/计算/液滴/adsor/trans/LGV/pfp
+module fluc
+suffix .dat
+dimension 1 0 1
+ave 1
+equli 2000
+sl 0.1890
+temp 100
+ncount 500
