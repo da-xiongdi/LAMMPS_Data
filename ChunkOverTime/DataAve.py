@@ -7,7 +7,7 @@ import os
 scale4f = 6.947e-11
 
 
-def ave_time_space(input_file, frequency, tin, tfi, index):
+def ave_time_space(input_file, tin, tfi, index):
     path = os.path.split(input_file)[0]
     file = os.path.split(input_file)[1]
     suffix = '.' + file.split('.')[-1]
@@ -16,12 +16,12 @@ def ave_time_space(input_file, frequency, tin, tfi, index):
     strength = file.split('-')[3]
     strategy = path.split('/')[-1]
 
-    fileData = ReadFile.ReadData(input_file, frequency)
+    fileData = ReadFile.ReadData(input_file)
 
     header4chunk = 3  # row number before each chunk# TimeStep Number-of-rows
-    temp = fileData.read2D(header4chunk)
+    temp = fileData.read2D()
     header4Data, Data = temp[1], temp[0]
-    chunkNum, rowNum = Data[0].shape[0], 2
+    chunkNum, rowNum = Data[0].shape[0], 5
     for i in range(len(header4Data)):
         if '/' in header4Data[i]:
             header4Data[i] = header4Data[i].replace('/', '-')
@@ -34,11 +34,11 @@ def ave_time_space(input_file, frequency, tin, tfi, index):
     validNum = int((tfi-tin)/5000) + 1
     validData = np.zeros((validNum, chunkNum, rowNum))  # 11 for early
 
-    target = 0  # 0 for intensive while 1 for extensive
+    target = 1  # 0 for intensive while 1 for extensive
     indexCoord = 0 if 'square' in file.split('-') else 1
-    indexNum = 2
+    indexNum = 3
 
-    force, press = 0, 0  # whether calculate the force
+    force, press = 0, 1  # whether calculate the force
     vbin = 4 * 5 * 55.4372  # 21000
     if force == 1:
         scale = scale4f

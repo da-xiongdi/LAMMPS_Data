@@ -3,8 +3,8 @@ import numpy as np
 
 import ReadFile
 
-inputPath = '../chunk_data/drop/testMop/ar.square.100.0.126.profile'
-outputPath = '../chunk_data/drop/testMop/stress1.txt'
+inputPath = '../chunk_data/drop.py/testMop/ar.square.100.0.126.profile'
+outputPath = '../chunk_data/drop.py/testMop/stress1.txt'
 
 chunkFrequency = 506
 Data = ReadFile.ReadChunk(inputPath, chunkFrequency)

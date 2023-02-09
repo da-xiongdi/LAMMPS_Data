@@ -5,7 +5,7 @@ import numpy as np
 import ReadFile
 
 file_path = "D:/document/00Study/01接触角摩擦力/计算/液滴/stage4/test/adsor/3/spring3NH/ar.y.100.0.1890.480.profile"
-# '../drop/TW/stage3/lj/ar.square.100.0.2520.profile'
+# '../drop.py/TW/stage3/lj/ar.square.100.0.2520.profile'
 path = os.path.split(file_path)[0]
 file = os.path.split(file_path)[1]
 strength = file.split('.')[3] + '.' + file.split('.')[4]

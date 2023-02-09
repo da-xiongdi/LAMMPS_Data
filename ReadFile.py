@@ -16,7 +16,7 @@ class ReadData:
         D2Data = self.fileData[3:]
 
         NumRow = int(D2Data[0].strip('\n').split(' ')[1])
-        step = int(len(D2Data) / (3 + NumRow)) + 1
+        step = int(len(D2Data) / (1 + NumRow))
         validData = np.zeros((step, NumRow, info4chunk))
 
         n = 0

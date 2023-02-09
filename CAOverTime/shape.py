@@ -8,7 +8,7 @@ import Fit
 import Angle
 
 
-def radium(input_file, frequency, rho, surface, base, equili=0, liquid_type=True):
+def radium(input_file, rho, surface, base, equili=0, liquid_type=True):
     path = os.path.split(input_file)[0]
     file = os.path.split(input_file)[1]
     suffix = '.' + file.split('.')[-1]
@@ -19,10 +19,10 @@ def radium(input_file, frequency, rho, surface, base, equili=0, liquid_type=True
     if len(keywords) == 4:
         save_r_path = path + '/r.%s.%s.%s.%s.txt' % (index, keywords[3], surface, base)
     else:
-        save_r_path = path + '/r.%s.%s.%s.%s.%s.txt' % (index, keywords[3], keywords[4], surface, base)
+        save_r_path = path + '/r.%s.%s.%s.%s.%s.%s.txt' % (index, keywords[3], keywords[4], surface, base, keywords[2])
 
-    data = ReadFile.ReadChunk(input_file, frequency)
-    validdata = data.read3DChunk()[0][equili:]
+    data = ReadFile.ReadData(input_file)
+    validdata = data.read2D()[0][equili:]
 
     rho_s = rho * surface  # 1.28
     cl = LocateCL.Cl(validdata, rho_s, base, liquid_type)
@@ -31,7 +31,7 @@ def radium(input_file, frequency, rho, surface, base, equili=0, liquid_type=True
     np.savetxt(save_r_path, clCoord)
 
 
-def ca(input_file, frequency, surface, base, equili=0):
+def ca(input_file, frequency, surface, base, equili=0, liquid_type=True):
     path = os.path.split(input_file)[0]
     file = os.path.split(input_file)[1]
     suffix = '.' + file.split('.')[-1]
@@ -44,11 +44,11 @@ def ca(input_file, frequency, surface, base, equili=0):
     save_c_path = path + '/contour.%s.%s.%s.%s.txt' % (index, strength, surface, base)
     save_f_path = path + '/fit.%s.%s.%s.%s.txt' % (index, strength, surface, base)
 
-    data = ReadFile.ReadChunk(input_file, frequency)
-    validdata = data.read3DChunk()[0][equili:]
+    data = ReadFile.ReadData(input_file)
+    validdata = data.read2D()[0][equili:]
 
     rho = 1.28 * surface
-    cl = LocateCL.Cl(validdata, rho, base)
+    cl = LocateCL.Cl(validdata, rho, base, liquid_type)
     contours = cl.contour()
 
     angle = np.zeros(frequency - equili)

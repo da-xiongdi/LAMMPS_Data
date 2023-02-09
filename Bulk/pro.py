@@ -1,3 +1,5 @@
+import sys
+
 import numpy as np
 from ReadFile import ReadIn, ReadData
 import os
@@ -31,19 +33,27 @@ class Calculator:
         return np.average(data[:, -1]) if ave == 1 else data[-1, -1]
 
     def fluc(self, data):
-        dime = data.shape[1]
+        time, dime = data.shape
         order = int((dime - 1) / 3)
-        deviation = np.zeros((order - 1, 3))
-        for j in np.arange(1, order):
-            for i in np.arange(1, 4):
-                e, e2 = data[:, i], data[:, i + 3*j]
-                temp, para = float(self.para['temp']), int(self.para['ncount'])
+        deviation = np.zeros((order - 1, time, 3))
+        energy = np.zeros((order, time, 3))
 
-                edelta = e2 - e ** (j+1)
-                esigma = edelta * kcal2J ** (j+1) * (1 / Na) ** (j+1)
-                cv = esigma / (kB * temp ** (j+1)) / para * Na / 39.98
-                deviation[j-1, i-1] = np.average(cv)
-        return deviation.reshape(deviation.shape[0]*deviation.shape[1])
+        temp, ncount = float(self.para['temp']), int(self.para['ncount'])
+        for j in range(order):
+            energy[j] = data[:, (1 + j * 3):(1 + (j + 1) * 3)]
+
+        for i in range(order - 1):
+            if i == 0:
+                deviation[i] = energy[i + 1] - energy[i] ** 2
+            elif i == 1:
+                deviation[i] = energy[i + 1] - 3 * energy[i] * energy[i - 1] + 2 * energy[i - 1] ** 3
+            elif i == 2:
+                deviation[i] = energy[i + 1] - energy[i - 1] ** 2
+        #     deviation[i] = (deviation[i] * kcal2J ** (i + 2) * (1 / Na) ** (i + 2)) \
+        #                    / ((i + 1) * (i + 2)) / (kB * temp) ** (i + 1)
+        # deviation = deviation / ncount
+        dev_ave = np.average(deviation, axis=1)
+        return dev_ave.reshape((1, (order-1)*3))
 
     def vis_pacf(self, data):
         pacfs = data[1:]
@@ -88,11 +98,18 @@ class Walker(Calculator):
 
     def cal_walker(self):
         file_paths = self.file_collector
+        try:
+            file_paths[0]
+        except IndexError:
+            sys.exit('no file is collected!')
+
+        tdamp_index = -1 if 'index' not in self.para else int(self.para['index'])
 
         traj_num = len(file_paths)  # number of output files from the collector
-        values = np.zeros((traj_num, 7))
+        values = np.zeros((traj_num, 4))
         i = 0
         damp_num, tdamp = 0, 0  # damp_num, number of traj with different tdamp
+        # print(file_paths)
         for input_file in file_paths:
             path, file = os.path.split(input_file)
             suffix = '.' + file.split('.')[-1]
@@ -107,9 +124,9 @@ class Walker(Calculator):
                     values[i, 1:] = getattr(self, func)(input_data)
                 else:
                     pass
-            values[i, 0] = keywords[-1]
-            damp_num += 1 if keywords[-1] != tdamp else 0
-            tdamp = keywords[-1]
+            values[i, 0] = keywords[tdamp_index]
+            damp_num += 1 if keywords[tdamp_index] != tdamp else 0
+            tdamp = keywords[tdamp_index]
 
             i += 1
         save_path = path + '/%s-%s-single.txt' % (self.modul, keywords[-2])

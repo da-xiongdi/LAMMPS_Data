@@ -28,7 +28,7 @@ def surface(input_file, layers, frequency, equli=0):
     else:
         pass
 
-    data = ReadFile.ReadChunk(input_file, frequency)
+    data = ReadFile.ReadData(input_file)
     input_data, header = data.read2D()
     n_index = header.index('Ncount') if 'Ncount' in header else 0
     temp_index = header.index('temp') if 'temp' in header else 0
