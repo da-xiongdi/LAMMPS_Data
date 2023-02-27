@@ -1,7 +1,7 @@
 import sys
 
 import numpy as np
-from ReadFile import ReadIn, ReadData
+from ReadFiles import ReadIn, ReadData
 import os
 
 kB = 1.3806504e-23  # J/K

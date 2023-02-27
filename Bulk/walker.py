@@ -1,5 +1,5 @@
 import os
-from ReadFile import ReadData
+from ReadFiles import ReadData
 import numpy as np
 import calculator
 

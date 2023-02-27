@@ -1,7 +1,7 @@
 # coding = utf-8
 import numpy as np
 
-import ReadFile
+import ReadFiles
 import os
 
 scale4f = 6.947e-11
@@ -16,7 +16,7 @@ def ave_time_space(input_file, tin, tfi, index):
     strength = file.split('-')[3]
     strategy = path.split('/')[-1]
 
-    fileData = ReadFile.ReadData(input_file)
+    fileData = ReadFiles.ReadData(input_file)
 
     header4chunk = 3  # row number before each chunk# TimeStep Number-of-rows
     temp = fileData.read2D()

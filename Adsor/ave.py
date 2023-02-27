@@ -1,7 +1,7 @@
 # coding = utf-8
 import numpy as np
 
-import ReadFile
+import ReadFiles
 import os
 
 scale4f = 6.947e-11
@@ -21,7 +21,7 @@ else:
 save_path = path + '/chunktemp.0.31.%s.%s.txt' % (index, strength)
 
 chunkFrequency, chunkNum, rowNum = 420, 140, 3
-fileData = ReadFile.ReadData(file_path, chunkFrequency)
+fileData = ReadFiles.ReadData(file_path, chunkFrequency)
 
 header4chunk = 3  # row number before each chunk# TimeStep Number-of-rows
 Data = fileData.read2D(header4chunk)[0]

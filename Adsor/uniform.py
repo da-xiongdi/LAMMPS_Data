@@ -2,7 +2,7 @@ import os.path
 
 import numpy as np
 
-import ReadFile
+import ReadFiles
 
 file_path = "D:/document/00Study/01接触角摩擦力/计算/液滴/stage4/test/adsor/3/spring3NH/ar.y.100.0.1890.480.profile"
 # '../drop.py/TW/stage3/lj/ar.square.100.0.2520.profile'
@@ -19,7 +19,7 @@ save_uni_path = path + '/uniform.%s.%s.txt' % (index, strength)
 
 step = 420  # 983#2020  # 1620
 
-data = ReadFile.ReadChunk(file_path, step)
+data = ReadFiles.ReadChunk(file_path, step)
 validdata = data.read2D()[0]
 adsorbn = np.empty(step)
 u = np.empty(step)

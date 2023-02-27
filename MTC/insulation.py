@@ -5,7 +5,8 @@ import scipy.integrate
 from CoolProp.CoolProp import PropsSI
 import matplotlib.pyplot as plt
 from sympy import *
-
+f = ["CO2", "H2", "Methanol", "H2O", "CO", "CH4"]
+print([PropsSI('DMOLAR', 'T', 500, 'P', 1e5, a) for a in f])
 
 # a = self.ode(self.T1, self.T2, c_in - c_c_in, c_out - c_c_out, thick, u_in)
 # b = self.ode(self.T1, self.T2, c_c_in, c_c_out, thick, u_in)
@@ -289,26 +290,26 @@ x_conversion = 0.5
 # tes = Test(523, 314, 6e6, fluids, q_mass_in, x_conversion)
 # print(tes.mflux2(0, [2, 3]))
 
-n = 0
-for T in Ts:
-    tes = Test(523, T, 6e6, fluids, q_mass_in, x_conversion)
-    h_flux[n], mass_flux[n], deviation[n] = tes.mflux2(0, [2, 3])  # [0:2]
-    h_coe[n] = h_flux[n, 0] / (T - 523)
-    n += 1
-
-plt.plot(Ts, h_flux[:, 1], '*')
-plt.plot(Ts, h_flux[:, 2], '+')
-plt.plot(Ts, h_flux[:, 0], '-')
-plt.show()
-plt.close()
-
-plt.plot(Ts, mass_flux[:, 1], '*')
-plt.plot(Ts, mass_flux[:, 2], '+')
-plt.plot(Ts, mass_flux[:, 0], '-')
-plt.show()
-plt.close()
-# tes = Test(523, 314, 6e6, fluids, q_mass_in, x_conversion)
-# print(tes.mflux(0, [2, 3])[0:2])
-
-plt.plot(Ts, h_coe)
-plt.show()
+# n = 0
+# for T in Ts:
+#     tes = Test(523, T, 6e6, fluids, q_mass_in, x_conversion)
+#     h_flux[n], mass_flux[n], deviation[n] = tes.mflux2(0, [2, 3])  # [0:2]
+#     h_coe[n] = h_flux[n, 0] / (T - 523)
+#     n += 1
+#
+# plt.plot(Ts, h_flux[:, 1], '*')
+# plt.plot(Ts, h_flux[:, 2], '+')
+# plt.plot(Ts, h_flux[:, 0], '-')
+# plt.show()
+# plt.close()
+#
+# plt.plot(Ts, mass_flux[:, 1], '*')
+# plt.plot(Ts, mass_flux[:, 2], '+')
+# plt.plot(Ts, mass_flux[:, 0], '-')
+# plt.show()
+# plt.close()
+# # tes = Test(523, 314, 6e6, fluids, q_mass_in, x_conversion)
+# # print(tes.mflux(0, [2, 3])[0:2])
+#
+# plt.plot(Ts, h_coe)
+# plt.show()
