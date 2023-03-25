@@ -55,10 +55,70 @@ def read_dump(path):
     return dump_data
 
 
-# a = time.time()
-# read_dump(dump_file)
-# b = time.time()
-# print(b - a)
+def count_step(path):
+    file = open(path)
+    buff_size = 1024 * 100
+    buff = file.read(buff_size)
+    count = 0
+    while len(buff) > 0:
+        count += buff.count('ITEM: TIMESTEP')
+        buff = file.read(buff_size)
+    return count
+
+
+def read_dump4(path):
+    # read the dump file
+    num_step = count_step()
+    with open(path, "r") as f:
+        for line in f:
+
+
+    # count the steps and atoms, read the boundary condition and dimension
+    boundary = dict()
+    for i in range(len(in_dump)):
+        if in_dump[i + 1][:len("ITEM: TIMESTEP")] == "ITEM: TIMESTEP":
+            count_onestep = i + 1
+            break
+        elif in_dump[i + 1][:len("ITEM: NUMBER OF ATOMS")] == "ITEM: NUMBER OF ATOMS":
+            count_atom = int(in_dump[i + 2].strip('/n'))  # atom number
+        elif in_dump[i + 1][:len("ITEM: BOX BOUNDS")] == "ITEM: BOX BOUNDS":
+            boundary["condition"] = in_dump[i + 1].strip('\n').split(' ')[3:]  # boundary condition
+            boundary["x"] = [float(j) for j in in_dump[i + 2].strip('\n').split(' ')]
+            boundary["y"] = [float(j) for j in in_dump[i + 3].strip('\n').split(' ')]
+            if len(boundary["condition"]) == 3:
+                boundary["z"] = [float(j) for j in in_dump[i + 4].strip('\n').split(' ')]
+
+    count_step = int(len(in_dump) / count_onestep)  # step number
+
+    # write the atom info to dump_data, id type x y z vx vy vz
+    dump_data = np.empty((count_step, count_atom, 8))
+    # m = 0
+    # for i in range(len(in_dump)):
+    #     n = 0
+    #     if "ITEM: ATOMS id type" in in_dump[i]:
+    #         temp = in_dump[i + 1:i + 1 + count_atom]
+    #         for j in range(count_atom):
+    #             dump_data[m, n] = [float(k) for k in temp[j].strip('\n').split(' ')[:8]]
+    #             n += 1
+    #         m += 1
+    m = 0
+    it = iter(in_dump)
+    for line in it:
+        n = 0
+        if "ITEM: ATOMS id type" in line:
+            while n < count_atom:
+                dump_data[m, n] = [float(k) for k in next(it).strip('\n').split(' ')[:8]]
+                n += 1
+            m += 1
+    del in_dump
+    print(dump_data[123, 1455])
+    return dump_data
+
+
+a = time.time()
+read_dump(dump_file)
+b = time.time()
+print(b - a)
 
 
 def read_dump2(path):
@@ -95,25 +155,54 @@ def read_dump2(path):
 
 def read_dump3(path):
     file = open(path)
-    buff_size = 1024 * 1000
+    buff_size = 1024 * 10
     buff = file.read(buff_size)
     length = 0
     index = []
     while len(buff) > 0:
+
         start = 0
         pos = buff.find('ITEM: TIMESTEP', start)
         while pos >= 0:
-            length += (pos-start+1)
-            index.append(pos)
+            # length += (pos-start+1)
+            index.append(pos + length)
             start = pos + 1
             pos = buff.find('ITEM: TIMESTEP', start)
         buff = file.read(buff_size)
+        length += len(buff)
     return index
 
 
+
+
+
 a = time.time()
-print(len(read_dump3(dump_file)))
+# position = read_dump3(dump_file)
+
+# with open("dump_file", "r", encoding="UTF-8") as f:
+#     while True:
+#         block = f.read(BLOCK_SIZE)
+
+print(count_step(dump_file))
+# file = open(dump_file)
+# content = file.read()[position[190]:]
+# print(content)
 b = time.time()
 print(b - a)
 
+a = time.time()
+# position = read_dump3(dump_file)
+
+# with open("dump_file", "r", encoding="UTF-8") as f:
+#     while True:
+#         block = f.read(BLOCK_SIZE)
+
+with open(dump_file,'r') as f2:
+    dump = f2.readlines()
+print(len(dump))
+# file = open(dump_file)
+# content = file.read()[position[190]:]
+# print(content)
+b = time.time()
+print(b - a)
 # print(0x0A)

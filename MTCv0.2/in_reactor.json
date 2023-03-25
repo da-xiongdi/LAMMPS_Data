@@ -1,10 +1,10 @@
 {
   "reactor": {
-    "L": 1,
-    "Dt":5,
+    "L": 3,
+    "Dt":1,
     "nt": 1,
-    "rhoc": 1870,
-    "phi": 0.39
+    "rhoc": 1775,
+    "phi": 0.5
   },
   "insulator": {
     "status": "off",
