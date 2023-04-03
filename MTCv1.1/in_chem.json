@@ -1,6 +1,6 @@
 {
-    "comp_list": ["CO2", "H2", "Methanol", "H2O", "CO","N2"],
-    "ref": "Graaf, 1986, Chemical Engineering Science; Bussche, 1996, Journal of Catalysis",
+    "comp_list": ["CO2", "H2", "Methanol", "H2O", "CO"],
+    "ref": "Graaf, 1986, Chemical Engineering Science; Bussche, 1996, Journal of Catalysis; Van-Dal, 2013, Journal of Cleaner Production",
     "reaction_list":{
         "1": "CO2 + 3 H2 <---> Methanol + H2O",
         "2": "CO2 + H2 <---> CO + H20"
@@ -21,8 +21,8 @@
         "H2O/H2": [3453.38,0]
     },
     "kr":{
-        "1": [1.07,36696],
-        "2": [1.22e10,-94765]
+        "1": [1.07,40000],
+        "2": [1.22e10,-98084]
     },
     "keq":{
         "1": [3066,-10.92],

@@ -64,8 +64,8 @@ def simulator(chem_data, reactor_data, feed_data):
         # if on, calculate the diffusional flux across the insulator
         if insulator_para["status"] == "on":
             dF_H2O_diff, dF_CH3OH_diff, dT_diff, dev = ins.flux(T[0], P, F_pd.iloc[0], insulator_para)
-            F_pd.loc[1, "Methanol"] += dF_CH3OH_diff * dl * nit
-            F_pd.loc[1, "H2O"] += dF_H2O_diff * dl * nit
+            F_pd.loc[1, "Methanol"] += dF_CH3OH_diff * dl * nit * 0.8
+            F_pd.loc[1, "H2O"] += dF_H2O_diff * dl * nit * 0.8
             T[0] += dT_diff * dl * nit
 
         sim_data.iloc[i, 1:7] = [T[0], P0, dT_diff * dl * nit, dF_CH3OH_diff * dl * nit, dF_H2O_diff * dl * nit, dev]
@@ -94,14 +94,14 @@ def simulator(chem_data, reactor_data, feed_data):
     return sim_data
 
 
-feed_files = ["in_feed.json"]  # ["in_feed2.json", "in_feed3.json"] #
+feed_files = ["in_feed2.json"]  # ["in_feed2.json", "in_feed3.json"] #
 for feed_file in feed_files:
     a = time.time()
     f1, f2, f3 = open('in_chem.json'), open('in_reactor.json'), open(feed_file)
     chem_dict = json.load(f1)
     reactor_dict = json.load(f2)
     feed_dict = json.load(f3)
-    path = "result/result_revised_CH3OH_H2O_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.xlsx" % \
+    path = "result/result_revised2_CH3OH_H2O_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.xlsx" % \
            (feed_dict["condition"]["recycle"], feed_dict["condition"]["Sv"],
             feed_dict["condition"]["T"], feed_dict["condition"]["P"],
             reactor_dict["reactor"]["Dt"], reactor_dict["reactor"]["nt"],

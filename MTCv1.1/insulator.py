@@ -87,9 +87,10 @@ def flux(Th, P, F_dict, insulator_data):
         # if the partial pressure of condensate is low, molar ratio of stream won't change
         na_H20, na_CH3OH = 0, 0
         mix_pro_ave = mixture_property((Tc + Th) / 2, pi_h)
+        property_h = mixture_property(Th, pi_h)
         k_e = mix_pro_ave["k"] * vof + ks * (1 - vof)  # effective heat conductivity of the insulator
         qcv = -2 * np.pi * k_e * (Tc - Th) / np.log(radium[1 - position] / radium[position])
-        dT = qcv / Ft0 / mix_pro_ave["cp_m"]
+        dT = qcv / Ft0 / property_h["cp_m"]
         return na_H20, na_CH3OH, dT, 0
 
     # to determine the molar flux of condensate
@@ -99,9 +100,9 @@ def flux(Th, P, F_dict, insulator_data):
     # the best ratio is selected by comparing the xi_h["H2O"]
     gap_min = 1e5
     rmin, rmax = 0.1, 1.6
-    r_guess = -629.59 * xi_h["H2O"] ** 2 + 64.735 * xi_h["H2O"] - 0.214  # x2 + 64.735x
-    rmin = max(r_guess * 0.5, 0)
-    rmax = min(r_guess * 1.5, 1.6)
+    # r_guess = -629.59 * xi_h["H2O"] ** 2 + 64.735 * xi_h["H2O"] - 0.214  # x2 + 64.735x
+    rmin = 0
+    rmax = 1
     # for dr in np.linspace(0.5, 0.01, 10):
     for r_CH3OH_H20 in np.arange(rmin, rmax, 0.05):
         # print(r_CH3OH_H20)
@@ -134,13 +135,6 @@ def flux(Th, P, F_dict, insulator_data):
         # else:
         #     rmin = r_sel
     # calculate the diffusional flux with optimized N_CH3OH/N_H2O
-    pi_c_cond = diff.p_sat(Tc, [r_sel / (1 + r_sel), 1 / (1 + r_sel)])
-    pi_c = diff.cold_comp(pi_h, pi_c_cond)
-    xi_c = pi_c / P
-    cold_cond = [Tc, xi_c["Methanol"], xi_c["H2O"]]
-    hot_cond = [Th, xi_h["Methanol"], xi_h["H2O"]]
-    cond_list = [hot_cond, cold_cond]
-    hot_cond.append(radium[position]), cold_cond.append(radium[1 - position])
     res = diff.ode_multi(cond_list[position], cond_list[position - 1], P, cal_property, r_sel)
     # [xc, xd, Nd, T, dTdz]
     # xsol = np.linspace(0.03 / 2, 0.07 / 2, 200)
